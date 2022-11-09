@@ -12,7 +12,8 @@ import logo from '../assets/logo.png'
 const Home = () => {
   const [toggleSidebar, setToggleSidebar] = useState(false);
   const [user, setUser] = useState(null)
-
+  const scrollRef = useRef(null);
+  
   const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear();
   
   useEffect(() => {
@@ -22,6 +23,10 @@ const Home = () => {
     .then((data) => {
       setUser(data[0]);
     })
+  }, [])
+  
+  useEffect(() => {
+    scrollRef.current.scrollTo(0, 0);
   }, [])
   
 
@@ -44,6 +49,12 @@ const Home = () => {
         <Sidebar user={user && user} closeToggle={setToggleSidebar} />
         </div>
       )}
+      <div className="pb-2 flex-1 h-screen overflow-y-scroll" ref={scrollRef}>
+      <Routes>
+        <Route path="/user-profile/:userId" element={<UserProfile />} />
+        <Route path="/*" element={<Pins user={user && user} />} />
+      </Routes>
+      </div>
     </div>
   )
 }
