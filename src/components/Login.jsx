@@ -6,8 +6,10 @@ import { FcGoogle } from 'react-icons/fc';
 import shareVideo from '../assets/share.mp4';
 import logo from '../assets/logowhite.png';
 
-const Login = () => {
+import { client } from '../client';
 
+const Login = () => {
+  const navigate = useNavigate();
   React.useEffect(() => {
     function start() {
       gapi.client.init({
@@ -18,7 +20,6 @@ const Login = () => {
 
     gapi.load('client:auth2', start);
   }, []);
-
   const responseGoogle = (response) => {
     localStorage.setItem('user', JSON.stringify(response.profileObj));
 
@@ -30,6 +31,11 @@ const Login = () => {
       userName: name,
       image: imageUrl,
     }
+
+    client.createIfNotExists(doc)
+      .then(() => {
+        navigate('/', { replace: true })
+      })
   }
 
   return (
@@ -60,7 +66,7 @@ const Login = () => {
                   onClick={renderProps.onClick}
                   disabled={renderProps.disabled}
                 >
-                <FcGoogle className="mr-4" /> Sign in with Google
+                  <FcGoogle className="mr-4" /> Sign in with Google
                 </button>
               )}
               onSuccess={responseGoogle}
